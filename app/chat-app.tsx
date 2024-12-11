@@ -2,7 +2,12 @@
 
 import { Button } from "@/src/components/ui/button";
 import { useChat } from "ai/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/src/components/ui/card";
 import Image from "next/image";
 import { Textarea } from "@/src/components/ui/textarea";
 import {
@@ -92,7 +97,7 @@ const ChatApp = () => {
 			})}
 		>
 			<h1
-				className={cn("text-xl font-bold flex gap-3 items-center", {
+				className={cn("text-xl font-bold flex gap-3 items-center mt-auto", {
 					"text-2xl": isEmptyMessages,
 				})}
 			>
@@ -104,17 +109,21 @@ const ChatApp = () => {
 				/>
 				Talk with VueJS Doc
 			</h1>
+			<p className="mb-auto">
+				You can ask any question relative to the Vue.js official website
+				documentation
+			</p>
 			{!isEmptyMessages ? (
 				<div
-					className="flex flex-1 flex-col gap-3 max-w-2xl py-7 mx-auto stretch overflow-auto scroll-smooth"
+					className="mx-auto flex max-w-2xl flex-1 flex-col items-stretch gap-3 overflow-auto scroll-smooth py-7"
 					ref={chatContainerRef}
 				>
 					{messages.map((m, idx) => (
 						<Card key={m.id} className="whitespace-pre-wrap">
 							<CardHeader>
-								<CardTitle className="flex gap-3 items-center">
+								<CardTitle className="flex items-center gap-3">
 									{m.role === "user" ? (
-										<p className="size-9 flex justify-center items-center rounded-full bg-gray-300">
+										<p className="flex size-9 items-center justify-center rounded-full bg-gray-300">
 											U
 										</p>
 									) : (
@@ -131,8 +140,10 @@ const ChatApp = () => {
 							<CardContent className="flex flex-col gap-3">
 								<Markdown className="prose">{m.content}</Markdown>
 								{showSources && idx === messages.length - 1 && data && (
-									<Markdown className="prose text-sm mt-10">
-										{m.role !== "user" ? (data[data.length - 1] as { sources: string }).sources : ""}
+									<Markdown className="prose mt-10 text-sm">
+										{m.role !== "user"
+											? (data[data.length - 1] as { sources: string }).sources
+											: ""}
 									</Markdown>
 								)}
 							</CardContent>
@@ -140,11 +151,15 @@ const ChatApp = () => {
 					))}
 				</div>
 			) : null}
-			<form onSubmit={handleSubmit} className="w-full flex justify-center">
-				<div className="p-3 w-full max-w-lg">
+			<form onSubmit={handleSubmit} className="flex w-full justify-center">
+				<div className="w-full max-w-xl p-3">
 					{messages.length >= 1 ? (
-						<div className="flex justify-start gap-3 mb-1">
-							<Button variant={"ghost"} onClick={resetMessages} disabled={isLoading}>
+						<div className="mb-1 flex justify-start gap-3">
+							<Button
+								variant={"ghost"}
+								onClick={resetMessages}
+								disabled={isLoading}
+							>
 								<RefreshCcwDot size={16} className="mr-2" />
 								Reset
 							</Button>
@@ -166,11 +181,13 @@ const ChatApp = () => {
 							) : null}
 						</div>
 					) : null}
-					<div className="flex items-end gap-3">
+					<div className="flex w-full items-end gap-3">
 						<Textarea
-							className=" border border-gray-300 rounded shadow-xl"
+							className="rounded border border-gray-300 shadow-xl"
 							value={input}
-							placeholder="Say something..."
+							rows={4}
+							cols={20}
+							placeholder="Tell me about lazy loading..."
 							onChange={handleInputChange}
 						/>
 						{isLoading ? (

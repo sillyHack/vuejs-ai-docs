@@ -2,7 +2,7 @@ import ChatApp from "./chat-app";
 
 export default function Home() {
 	return (
-		<main className="max-w-3xl h-full mx-auto">
+		<main className="mx-auto h-full max-w-3xl">
 			<ChatApp />
 		</main>
 	);
