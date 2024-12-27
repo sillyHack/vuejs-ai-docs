@@ -32,24 +32,27 @@ const SYSTEM_MESSAGE = `
 
 	Response format:
 	* short
+	* only give the necessary information in a clear and short way
 	* to the point
 	* with examples
 	* with metaphores
 	* using markdown
 	* space separated
+	* Be always brief and to the point
+	* Give the user a clear and simple answer
 `;
 
 const checkUsage = async () => {
 	const headerList = headers();
 	const ip = headerList.get("x-real-ip") || headerList.get("x-forwarded-for");
 
-	// check if the ip has not made more than 3 requests in the last 10 minutes
+	// check if the ip has not made more than 5 requests in the last hour
 	const sql = getNeon();
 
 	const searchQuery = `
-	SELECT COUNT(*) AS count
-	FROM usage
-	WHERE ip_address = $1 AND created_at > NOW() - INTERVAL '10 minutes';
+		SELECT COUNT(*) AS count
+		FROM usage
+		WHERE ip_address = $1 AND created_at > NOW() - INTERVAL '1 hour';
 	`;
 
 	const searchQueryParams = [ip];
@@ -58,7 +61,7 @@ const checkUsage = async () => {
 		count: number;
 	}[];
 
-	if (searchResult[0].count > 3) {
+	if (searchResult[0].count >= 5) {
 		throw new Error("Too many requests");
 	}
 
@@ -174,9 +177,10 @@ export async function POST(req: Request) {
 	const data = new StreamData();
 
 	// Append additional data
+	const urls = new Set(formattedResult.map((r) => r.url));
+
 	data.append({
-		sources: `\n\n### Source 
-${formattedResult.map((r) => `* [${r.url}](${r.url})\n`).join("")}`,
+		sources: Array.from(urls),
 	});
 
 	const result = await streamText({

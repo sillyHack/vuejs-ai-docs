@@ -42,7 +42,7 @@ const ChatApp = () => {
 			setShowSources(false);
 		},
 		onError: () => {
-			toast.error("Too many requests. Maximum 3 every 10 minutes.");
+			toast.error("Too many requests. Maximum 5 per hour.");
 		},
 	});
 
@@ -89,15 +89,20 @@ const ChatApp = () => {
 		};
 	}, [messages.length]);
 
+	const exampleQuestions = [
+		"Tell me about lazy loading in a short way",
+		"How to handle Vue component lifecycle?",
+		"Explain Vue reactivity system briefly",
+		"What are Vue directives?",
+		"How to use Vue Router?"
+	];
+
 	return (
 		<div
-			className={cn("max-h-screen w-full flex flex-col gap-3 items-center", {
-				"h-screen": isEmptyMessages,
-				"justify-center": isEmptyMessages,
-			})}
+			className={"flex h-screen max-h-screen w-full flex-col items-center justify-center gap-3"}
 		>
 			<h1
-				className={cn("text-xl font-bold flex gap-3 items-center mt-auto", {
+				className={cn("text-xl font-bold flex gap-3 items-center", {
 					"text-2xl": isEmptyMessages,
 				})}
 			>
@@ -109,13 +114,13 @@ const ChatApp = () => {
 				/>
 				Talk with VueJS Doc
 			</h1>
-			<p className="mb-auto">
+			<p>
 				You can ask any question relative to the Vue.js official website
 				documentation
 			</p>
 			{!isEmptyMessages ? (
 				<div
-					className="mx-auto flex max-w-2xl flex-1 flex-col items-stretch gap-3 overflow-auto scroll-smooth py-7"
+					className="m-auto flex max-w-2xl flex-1 flex-col items-stretch gap-3 overflow-auto scroll-smooth py-7"
 					ref={chatContainerRef}
 				>
 					{messages.map((m, idx) => (
@@ -139,12 +144,20 @@ const ChatApp = () => {
 							</CardHeader>
 							<CardContent className="flex flex-col gap-3">
 								<Markdown className="prose">{m.content}</Markdown>
-								{showSources && idx === messages.length - 1 && data && (
-									<Markdown className="prose mt-10 text-sm">
+								{showSources && !m.content.includes("I'm sorry") && idx === messages.length - 1 && data && (
+									<div className="mt-10">
+										<p className="font-bold">Sources:</p>
 										{m.role !== "user"
-											? (data[data.length - 1] as { sources: string }).sources
+											? 
+												<div className="flex flex-col gap-2 text-sm">
+													{(data[data.length - 1] as { sources: string[] }).sources.map((source) => (
+														<a key={source} href={source} target="_blank" className="italic underline">
+															{source}
+														</a>
+													))}
+												</div>
 											: ""}
-									</Markdown>
+									</div>
 								)}
 							</CardContent>
 						</Card>
@@ -181,24 +194,40 @@ const ChatApp = () => {
 							) : null}
 						</div>
 					) : null}
-					<div className="flex w-full items-end gap-3">
-						<Textarea
-							className="rounded border border-gray-300 shadow-xl"
-							value={input}
-							rows={4}
-							cols={20}
-							placeholder="Tell me about lazy loading..."
-							onChange={handleInputChange}
-						/>
-						{isLoading ? (
-							<Button onClick={stop} className="bg-red-500">
-								<StopCircle />
-							</Button>
-						) : (
-							<Button className="p-3">
-								<Send size={16} />
-							</Button>
-						)}
+					<div className="flex w-full flex-col items-end gap-3">
+						{messages.length === 0 && <div className="mb-2 flex flex-wrap gap-2">
+							{exampleQuestions.map((question, index) => (
+								<button
+									key={index}
+									onClick={(e) => {
+										e.preventDefault();
+										handleInputChange({ target: { value: question }} as React.ChangeEvent<HTMLTextAreaElement>);
+									}}
+									className="rounded-full bg-gray-100 px-3 py-1 text-sm transition-colors hover:bg-gray-200"
+								>
+									{question}
+								</button>
+							))}
+						</div>}
+						<div className="flex w-full items-end gap-3">
+							<Textarea
+								className="rounded border border-gray-300 shadow-xl"
+								value={input}
+								rows={4}
+								cols={20}
+								placeholder="What do you want to ask ?"
+								onChange={handleInputChange}
+							/>
+							{isLoading ? (
+								<Button onClick={stop} className="bg-red-500">
+									<StopCircle />
+								</Button>
+							) : (
+								<Button className="p-3">
+									<Send size={16} />
+								</Button>
+							)}
+						</div>
 					</div>
 				</div>
 			</form>
