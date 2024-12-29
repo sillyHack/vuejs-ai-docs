@@ -97,9 +97,61 @@ const ChatApp = () => {
 		"How to use Vue Router?"
 	];
 
+// 	const test_messages = [
+// 		{
+// 			id	: 1,
+// 			role: "user",
+// 			content: "Hello",
+// 		},
+// 		{
+// 			id: 2,
+// 			role: "assistant",
+// 			content: "Hi!",
+// 		},
+// 		{
+// 			id: 3,
+// 			role: "user",
+// 			content: "What's your name?",
+// 		},
+// 		{
+// 			id: 4,
+// 			role: "assistant",
+// 			content: `Lazy loading in Vue.js is a technique to improve the performance of your applications by loading JavaScript components or routes only when they are needed, rather than loading everything upfront. This can be achieved using dynamic imports and Vue's defineAsyncComponent function.
+
+
+// For example, to lazy load a component:
+
+
+// import { defineAsyncComponent } from 'vue';
+
+// const LazyComponent = defineAsyncComponent(() =>
+//   import('./components/LazyComponent.vue')
+// );
+
+// And for Vue Router, you can lazy load routes like this:
+
+
+// const router = new VueRouter({
+//   routes: [
+//     {
+//       path: '/lazy',
+//       component: () => import('./components/LazyRouteComponent.vue')
+//     }
+//   ]
+// });
+
+// This approach reduces the initial load time and resource consumption, enhancing user experience especially in large applications.
+
+// Sources:
+
+// https://vuejs.org/guide/best-practices/performance
+// https://vuejs.org/guide/components/async`,
+// 		},
+// 	];
+
 	return (
 		<div
-			className={"flex h-screen max-h-screen w-full flex-col items-center justify-center gap-3"}
+			className="flex h-screen max-h-screen w-full flex-col items-center justify-center gap-3"
 		>
 			<h1
 				className={cn("text-xl font-bold flex gap-3 items-center", {
